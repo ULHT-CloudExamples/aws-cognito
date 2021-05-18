@@ -1,8 +1,9 @@
-let userPoolId = 'eu-west-1_R6Yhos9T7'
-let clientId = '2vvcgj8ppbqvatsmsmf2e1bk4f'
+let userPoolId = 'eu-west-1_R6Yhos9T7';
+let clientId = '2vvcgj8ppbqvatsmsmf2e1bk4f';
 
 $(document).ready(() => {
     $('#new_password_fields').hide();
+    $('#logout-container').hide();
 });
 
 let poolData = {
@@ -41,11 +42,13 @@ const signIn = () => {
             // API Gateway Authorizer
             // let idToken = result.idToken.jwtToken;
             logMessage("Authentication successful");
+            $('#credentials').hide();
+            $('#logout-container').show();
         },
 
         onFailure: (err) => {
             console.log("failed to authenticate");
-            console.log(JSON.stringify(err))
+            console.log(JSON.stringify(err));
             logMessage("Failed to Log in.\nPlease check your credentials.")
         },
         newPasswordRequired: (userAttributes, requiredAttributes) => {
@@ -57,13 +60,13 @@ const signIn = () => {
             newPasswordFields();
         }
     });
-}
+};
 
 const newPasswordFields = () => {
     $('#credentials').hide();
     $('#new_password_fields').show();
     logMessage("Password reset is needed.");
-}
+};
 
 const setNewPassword = () => {
     let newPassword = $('#new_password').val();
@@ -71,22 +74,25 @@ const setNewPassword = () => {
         onSuccess: (result) => {
             $('#credentials').show();
             $('#new_password_fields').hide();
-            logMessage("Password changed. Retry singing in.")
+            logMessage("Password changed. Retry singing in.");
             console.log(result);
         },
         onFailure: (err) => {
             logMessage(err)
         },
     });
-}
+};
 
 const logMessage = (message) => {
     $('#message-display').html(`<span>${message}</span>`);
-}
+};
 
-const logOut = () => {
-    let cognitoUser = userPool.getCurrentUser();
+const logout = () => {
+    // let cognitoUser = userPool.getCurrentUser();
     cognitoUser.signOut();
-}
+    $('#credentials').show();
+    $('#logout-container').hide();
+    logMessage("Cognito logout succesfull.")
+};
 
 
